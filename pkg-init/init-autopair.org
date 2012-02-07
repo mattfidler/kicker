@@ -1,0 +1,11 @@
+#+TITLE: Kicker Autopair 
+#+AUTHOR: Matthew L. Fidler
+* Introduction
+Autopair mode allows parenthesis auto-pairing to occur for all modes
+not just list like paredit.  See [[http://www.emacswiki.org/emacs/AutoPairs#toc3][EmacsWiki: Auto Pairs]].
+
+#+BEGIN_SRC emacs-lisp
+  (autopair-global-mode 1)
+  (setq autopair-skip-whitespace t)
+#+END_SRC
+

@@ -1,0 +1,9 @@
+#+TITLE: Link Daemon Initilaization
+#+AUTHOR: Matthew L. Fidler
+* Introduction
+Link Daemon start
+#+BEGIN_SRC emacs-lisp
+  (require 'linkd)
+  (linkd-mode)
+#+END_SRC
+

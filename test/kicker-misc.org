@@ -1,0 +1,292 @@
+#+TITLE: Kicker Misc
+#+OPTIONS: toc:nil num:nil ^:nil
+
+This is part of the [[file:kicker.org][Emacs Kicker]].
+
+* Kicker Misc
+Things that don't fit anywhere else.
+
+** Color Themes
+*** Color-Themes for Emacs 24 and above
+Emacs24 has build in support for saving and loading themes.
+
+A Theme builder is available at http://elpa.gnu.org/themes/ along with
+a list of pre-built themes at http://elpa.gnu.org/themes/view.html and
+themes are available through ELPA.  You can also customize the themes
+by =customize-create-theme=.  
+
+Downloaded themes may be saved to the =Data/themes/= directory.  Once downloaded and
+evaluated a theme is activated using the =load-theme= function.
+
+#+BEGIN_SRC emacs-lisp
+  (setq custom-theme-directory (concat usb-app-dir "../Data/themes/"))
+#+END_SRC
+
+
+*** Color-Themes for Emacs 23 and below
+The [[http://www.nongnu.org/color-theme/][Color Themes]] package provides support for changing, saving,
+sharing Emacs color themes.  To view and apply color themes available
+on your system run =M-x color-theme-select=.  See the color theme
+website and EmacsWiki pages for more information.
+- http://www.nongnu.org/color-theme/
+- http://www.emacswiki.org/emacs/ColorTheme
+
+#+begin_src emacs-lisp
+  (when (< emacs-major-version 24)
+    (require 'color-theme)
+    (color-theme-initialize))
+#+end_src
+
+Once you've selected a preferred color theme it can be installed by
+adding its function to your initialization.  For example
+#+begin_src emacs-lisp 
+  (when (< emacs-major-version 24)
+    (color-theme-clarity))
+#+end_src
+will load the =clarity= color theme when Emacs starts.
+
+Downloaded themes may be saved to the =themes/= directory in the base
+of the Kicker which ignored by git.  Once downloaded and
+evaluated a theme is activated using the =load-theme= function.
+
+** Window systems
+#+srcname: kicker-window-view-stuff
+#+begin_src emacs-lisp 
+  (when window-system
+    (mouse-wheel-mode t)
+    (set-terminal-coding-system 'utf-8)
+    (set-keyboard-coding-system 'utf-8)
+    (prefer-coding-system 'utf-8)
+    (require 'saveplace)
+  
+    (setq visible-bell t
+          echo-keystrokes 0.1
+          font-lock-maximum-decoration t
+          inhibit-startup-message t
+          transient-mark-mode t
+          color-theme-is-global t
+          delete-by-moving-to-trash t
+          shift-select-mode nil
+          truncate-partial-width-windows nil
+          uniquify-buffer-name-style 'forward
+          whitespace-style '(trailing lines space-before-tab
+                                      indentation space-after-tab)
+          whitespace-line-column 100
+          ediff-window-setup-function 'ediff-setup-windows-plain
+          oddmuse-directory (concat usb-site-lisp-dir "../Data/saves/oddmuse-"
+                                    system-name)
+          desktop-dirname (concat usb-site-lisp-dir "../Data/saves/desktop-"
+                                  system-name)
+          xterm-mouse-mode t
+          save-place t
+          bookmark-default-file (concat usb-site-lisp-dir "../Data/saves/emacs-"
+                                        system-name ".bmk")
+          save-place-file (concat usb-site-lisp-dir "../Data/saves/places-"
+                                  system-name)))
+  (when (not (file-exists-p desktop-dirname))
+      (make-directory desktop-dirname t))
+  
+#+end_src
+
+** Transparently open compressed files
+#+begin_src emacs-lisp
+(auto-compression-mode t)
+#+end_src
+
+** Save a list of recent files visited.
+#+begin_emacs-lisp 
+(recentf-mode 1)
+#+end_emacs-lisp
+
+** Highlight matching parentheses when the point is on them.
+#+srcname: kicker-match-parens
+#+begin_src emacs-lisp 
+(show-paren-mode 1)
+#+end_src
+
+** ido mode
+ido-mode is like magic pixie dust!
+
+When using EmacsPortable.App in Windows & MacOS, a single =~/.ido.last=
+caching mechanism does not work.  The windows file history causes the
+Mac version to choke and not startup.  Strangely UNIX-based
+file systems do not understand the =c:/= caching.  Therefore, I am
+going to change the =~/.ido.last= to
+=Data/saves/ido-last-system-name= that way there is an ido-completion
+for each system that EmacsPortable runs on.
+
+The [[http://www.masteringemacs.org/articles/2010/10/10/introduction-to-ido-mode/][Introduction to Ido Mode]] provides a nice introduction and
+explanation of these customizations.
+
+#+srcname: kicker-loves-ido-mode
+#+begin_src emacs-lisp 
+  (when (> emacs-major-version 21)
+    (ido-mode t)
+    (mapc (lambda(ext)
+            (add-to-list 'completion-ignored-extensions ext))
+          '("elc" "exe" "com" "org_archive" "png" "gif" "csv" "jpg" "jpeg"))
+    (setq ido-enable-prefix t
+          ido-enable-flex-matching t
+          ido-create-new-buffer 'always
+          ido-use-filename-at-point nil
+          ido-enable-tramp-completion (if (getenv "EPPAGEANT") t nil)
+          ido-everywhere t
+          org-completion-use-ido t
+          ido-max-prospects 10
+          ido-ignore-extensions t
+          ido-file-extensions-order '(".org" ".R" ".ctl" ".pltc" ".nsi" ".txt" ".py" ".emacs" ".xml" ".el" ".ini" ".cfg" ".cnf" ".nsi" ".nsh")
+          ido-save-directory-list-file (concat usb-site-lisp-dir
+                                               "../Data/saves/ido-last-" system-name)))
+  
+#+end_src
+
+*** smex mode
+Smex is ido for M-x
+#+BEGIN_SRC emacs-lisp
+(smex-initialize)
+#+END_SRC
+: 
+*** ido-ubiquitous
+Make IDO more ubiquitous
+#+BEGIN_SRC emacs-lisp
+  (when (fboundp 'ido-ubiquitous-mode)
+    (ido-ubiquitous-mode 1))
+#+END_SRC
+
+** Line Numbering mode
+#+BEGIN_SRC emacs-lisp
+(require 'linum-off nil t)
+(global-linum-mode 1)
+#+END_SRC
+
+** Tabbar-Ruler
+#+BEGIN_SRC emacs-lisp
+  (require 'tabbar-ruler)
+#+END_SRC
+
+** Yaoddmuse-mode
+Add yaoddmuse emacs auto-load
+#+BEGIN_SRC emacs-lisp
+  (autoload 'emacswiki-post "yaoddmuse" "" t)
+  
+#+END_SRC
+
+** Automatic Lisp Headings
+This requires =lib-requires= and =header2=
+#+BEGIN_SRC emacs-lisp
+  (require 'header2 nil t)
+  (when (featurep 'header2)
+    (add-hook 'write-file-hooks 'auto-update-file-header)
+    (add-hook 'emacs-lisp-mode-hook 'auto-make-header))
+  
+#+END_SRC
+
+** Other, spell checking, tabs, imenu and a coding hook
+#+begin_src emacs-lisp 
+  (set-default 'indent-tabs-mode nil)
+  (set-default 'indicate-empty-lines t)
+  (set-default 'imenu-auto-rescan t)
+  
+  (add-hook 'text-mode-hook 'turn-on-auto-fill)
+  (add-hook 'text-mode-hook 'turn-on-flyspell)
+  
+  (defvar kicker-coding-hook nil
+    "Hook that gets run on activation of any programming mode.")
+  
+  (defalias 'yes-or-no-p 'y-or-n-p)
+  ;; Seed the random-number generator
+  (random t)
+#+end_src
+
+*** functions for prettier source code
+#+begin_src emacs-lisp
+(defun kicker-pretty-lambdas ()
+  (font-lock-add-keywords
+   nil `(("(\\(lambda\\>\\)"
+          (0 (progn (compose-region (match-beginning 1) (match-end 1)
+                                    ,(make-char 'greek-iso8859-7 107))
+                    nil))))))
+#+end_src
+
+*** possible issues/resolutions with flyspell
+Most of the solution came from [[http://www.emacswiki.org/emacs/FlySpell][EmacsWiki-FlySpell]].  Here is one
+possible fix.
+
+** Hippie expand: at times perhaps too hip
+#+begin_src emacs-lisp
+(delete 'try-expand-line hippie-expand-try-functions-list)
+(delete 'try-expand-list hippie-expand-try-functions-list)
+#+end_src
+
+** Don't clutter up directories with files~
+Rather than saving backup files scattered all over the file system,
+let them live in the =backups/= directory inside of the Kicker.
+#+begin_src emacs-lisp
+  (setq backup-directory-alist `(("." . ,(concat
+                                          (expand-file-name
+                                           (concat
+                                             usb-site-lisp-dir "../Data/saves/backups")) "/"))))
+  (setq auto-save-file-name-transforms
+        `((".*" ,(expand-file-name
+                  (concat
+                   usb-site-lisp-dir "../Data/saves/backups")) t)))
+  
+#+end_src
+
+** Default to unified diffs
+#+begin_src emacs-lisp
+(setq diff-switches "-u")
+#+end_src
+
+** Changing default Browser to portable browser.
+You have a portable browser, you probably want to use it as the
+default browser.  This attempts to set up the browser if it exists.
+
+#+BEGIN_SRC emacs-lisp
+  (when (eq system-type 'windows-nt)
+    (cond
+     ((file-readable-p
+       (concat usb-drive-letter
+               "PortableApps/FirefoxPortable/FirefoxPortable.exe"))
+       (setq browse-url-firefox-program
+             (concat usb-drive-letter
+                     "PortableApps/FirefoxPortable/FirefoxPortable.exe")
+             browse-url-browser-function 'browse-url-firefox))
+     ((file-readable-p
+       (concat usb-drive-letter
+               "PortableApps/SeamonkeyPortable/SeamonkeyPortable.exe"))
+      (setq browse-url-firefox-program
+            (concat usb-drive-letter
+                    "PortableApps/SeamonkeyPortable/SeamonkeyPortable.exe")
+            browse-url-browser-function 'browse-url-firefox))
+     ((file-readable-p
+       (concat usb-drive-letter
+               "PortableApps/IronPortable/IronPortable.exe"))
+      (setq browse-url-generic-program
+            (concat usb-drive-letter
+                    "PortableApps/IronPortable/IronPortable.exe")
+            browse-url-browser-function 'browse-url-generic))
+     ((file-readable-p
+       (concat usb-drive-letter
+               "PortableApps/GoogleChromePortable/GoogleChromePortable.exe"))
+      (setq browse-url-generic-program
+            (concat usb-drive-letter
+                    "PortableApps/GoogleChromePortable/GoogleChromePortable.exe")
+            browse-url-browser-function 'browse-url-generic))))
+  
+#+END_SRC
+
+** Cosmetics
+
+#+begin_src emacs-lisp
+(eval-after-load 'diff-mode
+  '(progn
+     (set-face-foreground 'diff-added "green4")
+     (set-face-foreground 'diff-removed "red3")))
+
+(eval-after-load 'magit
+  '(progn
+     (set-face-foreground 'magit-diff-add "green3")
+     (set-face-foreground 'magit-diff-del "red3")))
+#+end_src
+

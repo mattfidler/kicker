@@ -1,0 +1,41 @@
+#+TITLE: Ergoemacs Keybindings Startup
+#+AUTHOR: Matthew L. Fidler
+* Introduction
+Ergoemacs keybindings are supposed to be easier keybindings to use
+than with standard emacs.  
+I the colemak keyboard.  I also use ergoemacs.
+* Ergoemacs +smex
+To use Ergoemacs with SMEX, Control-A needs to be redefined
+#+BEGIN_SRC emacs-lisp
+  (defun smex-if-exists (&optional prefix-arg)
+    (interactive "p")
+    (if (fboundp 'smex)
+        (smex)
+      (execute-extended-command prefix-arg)))
+  
+  (define-key ergoemacs-keymap "\M-a" 'smex-if-exists)
+  
+#+END_SRC
+
+* Ergoemacs -- Please use regular expression searching
+#+BEGIN_SRC emacs-lisp
+  (define-key ergoemacs-keymap [remap isearch-forward] 'isearch-forward-regexp)
+  (define-key ergoemacs-keymap [remap isearch-backward] 'isearch-backward-regexp)
+#+END_SRC
+
+* Remove silly Ergoemacs keys.
+I really don't think that =M-x= and =M-c= =M-z= are very useful since
+the control variants do the /exact same thing/.  Silly.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key ergoemacs-keymap "\M-c" nil)
+  (define-key ergoemacs-keymap "\M-x" nil)
+  (define-key ergoemacs-keymap "\M-z" nil)
+#+END_SRC
+
+Also this interferes with ESS-tracebug's default prefix key of =\M-c=
+
+#+BEGIN_SRC emacs-lisp
+  (ergoemacs-mode 1)
+  (cua-mode 1)
+#+END_SRC

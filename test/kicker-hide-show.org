@@ -1,0 +1,112 @@
+#+TITLE: Kicker Hide/Show
+#+AUTHOR: Matthew L. Fidler
+
+** Hide/Show Minor Mode 
+*** General
+This implements hide/show capabilties for certian major modes.
+*** Customizable Options
+:PROPERTIES:
+:ID: 31ff9743-0fd7-4c5e-950e-5379ce7f4c0d
+:END:
+#+begin_src emacs-lisp
+  (defcustom EmacsPortable-hide-show-default-modes
+    (list
+     "c-mode-common"
+     "emacs-lisp-mode"
+     "java-mode"
+     "perl-mode"
+     "ess-mode"
+     "sh-mode")
+    "* List of Programming modes with hide-show enabled by default."
+    :type '(repeat
+            (string :tag "Mode to use hide-show with"))
+    :group 'EmacsPortable
+    :group 'hideshow)
+
+  (defcustom EmacsPortable-hide-show-visible 't
+    "* Enable hideshow vis on these modes"
+    :type 'boolean
+    :group 'hideshow
+    :group 'hideshowvis
+    :group 'EmacsPortable)
+
+  (defcustom EmacsPortable-hide-show-org-mode 't
+    "* Enables org-mode style hiding and showing of code."
+    :type 'boolean
+    :group 'hideshow
+    :group 'EmacsPortable
+    )
+  (defcustom EmacsPortable-hide-show-visble-extras 't
+    "* Enables hide-show visibility extras"
+    :type 'boolean
+    :group 'hideshow
+    :group 'EmacsPortable)
+#+end_src
+*** Enabling Hide/show
+:PROPERTIES:
+:ID: e9887f30-2055-4fac-a3fc-1ec53cea0b84
+:END:
+Function to enable Hide/Show as well as eye candy for hide-show
+#+begin_src emacs-lisp
+  (defun EmacsPortable-hide-show-enable ()
+    "* Enable Hide/show"
+    (when (let (ret)
+            (mapc (lambda(x)
+                    (if (and (not ret) (string= x (format "%s" major-mode)))
+                        (setq ret 't)))
+                  EmacsPortable-hide-show-default-modes)
+            (symbol-value 'ret))
+      (hs-minor-mode 1)
+      
+   (when (and (featurep 'hideshowvis) EmacsPortable-hide-show-visble-extras)
+        (define-fringe-bitmap 'hs-marker [0 24 24 126 126 24 24 0])
+        
+        (defcustom hs-fringe-face 'hs-fringe-face
+          "*Specify face used to highlight the fringe on hidden regions."
+          :type 'face
+          :group 'hideshow)
+        
+        (defface hs-fringe-face
+          '((t (:foreground "#888" :box (:line-width 2 :color "grey75" :style released-button))))
+          "Face used to highlight the fringe on folded regions"
+          :group 'hideshow)
+        
+        (defcustom hs-face 'hs-face
+          "*Specify the face to to use for the hidden region indicator"
+          :type 'face
+          :group 'hideshow)
+        
+        (defface hs-face
+          '((t (:background "#ff8" :box t)))
+          "Face to hightlight the ... area of hidden regions"
+          :group 'hideshow))))
+  
+  
+#+end_src
+**** Enabling Hide show for enabled major modes and possibly R
+:PROPERTIES:
+:ID: e0a99bee-cf55-4484-a452-8e21c97b83f8
+:END:
+
+*** Hide/Show work arounds
+:PROPERTIES:
+:ID: 33ca395f-d6c2-4ade-9dfc-c27f9cd8dcdd
+:END:
+These are work-arounds for certain situations where hide/show may
+cause a problem.
+#+begin_src emacs-lisp
+  ;; Hideshow off for unsupported things.
+  (add-hook 'ediff-prepare-buffer-hook (lambda()
+                                         (when hs-minor-mode
+                                           (turn-off-hideshow))))
+  (add-hook 'vc-before-checkin-hook (lambda()
+                                      (when hs-minor-mode
+                                        (turn-off-hideshow))))
+  (add-hook 'vc-before-checkin-hook
+            (lambda ()
+              (when hs-minor-mode
+                (save-excursion
+                  (goto-char (point-min))
+                  (hs-show-block)))))
+  
+#+end_src

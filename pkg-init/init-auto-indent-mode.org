@@ -1,0 +1,13 @@
+#+TITLE: Kicker Autoindent Settings
+#+AUTHOR: Matthew L. Fidler
+* Introduction
+The autoindent package is something that I find quite useful.  I also
+like to insert some TextMate behaviors to my keys.
+#+BEGIN_SRC emacs-lisp
+  (setq auto-indent-key-for-end-of-line-then-newline "<M-return>")
+  (setq auto-indent-key-for-end-of-line-insert-char-then-newline "<M-S-return>")
+  (setq auto-indent-kill-line-at-eol nil)
+  (setq auto-indent-delete-line-char-remove-extra-spaces t)
+  (auto-indent-global-mode 1)
+#+END_SRC
+

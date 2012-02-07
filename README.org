@@ -1,0 +1,23 @@
+#+TITLE: Portable Kicker
+#+AUTHOR: Matthew L. Fidler
+This is a combination of the [[https://github.com/eschulte/emacs24-starter-kit][Eric Schulte's emacs24 starter kit]] and
+ [[https://github.com/dimitri/emacs-kicker][Dimitri's emacs-kicker]].  I like the idea of a literate startup as
+ well as el-get's idea of getting packages from anywhere.  The
+ advantage for me is my packages are managed under =git=.
+
+This should provide a saner set of defaults than you get normally with
+Emacs. It's intended for beginners, but provides a good elisp
+initialization structure for all levels of users.
+
+The main advantage of this Emacs Starter Kit are
+- better default settings
+- easy loading of many useful libraries and configurations
+- "literate" customization embedded in Org-mode files
+- an organizational directory structure
+- git provides for version control, backup, and sharing
+- easy instillation with no need to compile external packages
+
+The latest version is at [[http://github.com/mlf176f2/kicker/]]
+
+For more information including use and installation instructions see
+[[./kicker.org][kicker.org]]

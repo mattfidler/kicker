@@ -1,0 +1,451 @@
+#+TITLE: Portable Kicker
+#+AUTHOR: Matthew L. Fidler
+* Introduction 
+ This is a combination of the [[https://github.com/eschulte/emacs24-starter-kit][Eric Schulte's emacs24 starter kit]] and
+ [[https://github.com/dimitri/emacs-kicker][Dimitri's emacs-kicker]].  I like the idea of a literate startup as
+ well as el-get's idea of getting packages from anywhere.  The
+ advantage for me is my packages are managed under =git=.  
+** Learning
+This won't teach you Emacs, but it'll make it easier to get
+comfortable. To access the tutorial, press control-h followed by t
+from within Emacs.
+
+The [[http://emacswiki.org][Emacs Wiki]] is also very handy.
+** Installation
+*** Windows Installation
+*** Mac Installation
+*** Other Installation
+1. Install Emacs 24 or greater.  Use your package manager if you have
+   one and it has an install candidate for Emacs 24.
+2. Checkout a version of the starter kit using git -- if you're new to
+   git checkout this [[http://www.vogella.de/articles/Git/article.html][Git Tutorial]], also we'd highly recommend that you
+   try out [[http://zagadka.vm.bytemark.co.uk/magit/magit.html][magit]] the Emacs mode for git interaction.
+   #+begin_src sh
+     git clone http://github.com/mlf176f2/kicker.git
+   #+end_src
+3. Move the resulting directory to =~/.emacs.d= [1]
+4. Launch Emacs!
+
+After setup you may need to restart Emacs one or twice while it
+downloads packages from [[https://github.com/dimitri/el-get][el-get]] and/or [[* Emacs Lisp Package Archive][ELPA]] -- errors parsing html from
+=*tromey.com:80*= can generally be safely ignored.
+
+If you are missing some autoloads after an update (should manifest
+itself as =void function: foobar= errors) try M-x regen-autoloads.
+
+If you want to keep your regular =~/.emacs.d= in place and just launch
+a single instance using the kicker, try the following invocation:
+
+#+begin_src sh
+  emacs -q -l ~/path/to/emacs24-starter-kit/init.el
+#+end_src
+
+Note that having a =~/.emacs= file might override the kicker
+loading, so if you've having trouble loading it, make sure that file
+is not present.
+** Structure
+   :PROPERTIES:
+   :CUSTOM_ID: structure
+   :END:
+The [[./init.el][init.el]] file is where everything begins. It is loaded
+automatically by Emacs on startup, its sole purpose is to load the
+elisp code embedded in this file.  This file then loads some minimal
+configuration which should be generally useful, and goes on to load
+user-specific configuration files from the following locations
+mentioned in [[customizations]] immediately below.
+
+** Customization
+   :PROPERTIES:
+   :CUSTOM_ID: customization
+   :tangle:   no
+   :END:
+
+The defaults built into the kicker are only the beginning of
+most users customization of Emacs to suite their needs.  The starter
+kit provides a number of places for additional user and system
+specific customization.  These are designed in such a way that it will
+be easy for you to continue tracking your own personal customization
+inside the starter-kit while retaining your ability to pull down
+general starter-kit updates without conflict.
+
+- git branch :: The first step to user-specific customization is (like
+     in any git project) to MAKE A BRANCH FOR YOUR LOCAL CHANGES.
+     Save the master branch for pulling down new versions of the
+     kicker, and save all of your personal information in a
+     personal branch.  That way you never have to worry about
+     accidentally =git push='ing up a patch with all of your gnus
+     email passwords.
+
+     Additionally, you may use encrypted org files to save your =gnus=
+     passwords.  Emacs automatically encrypts =.org.gpg= files.  This
+     requires gpg. 
+
+- User specific config :: Your personal configuration information can
+     be stored in a user-specific-config file.  This is the file named
+     after your user with the extensions =.el= or =.org= [2].  If
+     you're unsure of your user name evaluate the following code block
+     to find out.
+     #+begin_src sh
+       echo $USER
+     #+end_src
+
+     If your configuration starts to feel cramped in a single file
+     (although with the nested headlines of an Org-mode file, that
+     could take a while) and you want to stretch your config's legs,
+     you can also create a directory named after your system user
+     name.  If a such a directory exists, it will be added to the
+     load-path, and any elisp or org-mode w/embedded elisp files in it
+     will be loaded.
+
+- System specific config :: Finally, you may want to configure
+     different settings for different machines.  The Kicker will
+     look for a file named after the current hostname ending in =.el=
+     or =.org= which will allow host-specific configuration.  If
+     you're unsure of your hostname the following can be executed to
+     find out.
+     #+begin_src sh
+       hostname
+     #+end_src
+
+- Activating more of the kicker :: By default, the kicker
+     only includes customizations which are likely to be useful across
+     nearly any Emacs install (the only automatically loaded external
+     files are those listed in [[#load-the-starter-kit-core][Load the rest of the kicker core]]).
+     You may have noticed that there are many other
+     =starter-kit-*.org= files located in this directory.  A good
+     first step is to browse these files and begin optionally loading
+     those that look relevant to your workflow.  For example, if you
+     often work with Python source code you will probably want to load
+     =starter-kit-python.org= either by directly copying the sections
+     that look useful into your personal config, or simply by loading
+     the entire file directly with the following.
+     #+begin_src emacs-lisp
+       (starter-kit-load "python")
+     #+end_src
+
+     Alternately you can load only one particular subsection of an
+     included file, for example to load just the "pretty-summary"
+     section of =starter-kit-gnus.org= run the following.
+     #+begin_src emacs-lisp
+       (starter-kit-load "gnus" "pretty-summary")
+     #+end_src
+     
+     Finally you can load just those subsections of a file which have
+     a specific tag, so to load just the two sections of
+     =starter-kit-misc-recommended.org= which are tagged =visual= add
+     the following to your personal initialization.  Note: header id's
+     take priority over tags.
+     #+begin_src emacs-lisp
+       (starter-kit-load "gnus" "visual")
+     #+end_src
+
+- Installing more elisp libraries :: The easiest way to install new
+     libraries is through either [[https://github.com/dimitri/el-get][el-get]] or the Emacs Lisp Package
+     Archive (see [[#emacs-lisp-package-archive][Emacs Lisp Package Archive]] below).  When a library
+     is not available through el-get or ELPA you can grab it's source
+     and place it directly in the =/Data/src= directory.  Any packages
+     found there will automatically be added to your load-path when
+     Emacs starts up, and are guaranteed not to conflict with future
+     starter-kit updates.  If you are adventurous, you can write your
+     own [[http://www.emacswiki.org/emacs-es/el-get#toc5][el-get]] recipes to install. See [[elisp:(describe-variable 'el-get-sources)][el-get-sources]] for more
+     information about writing recipes.
+
+- Misc :: Some additional miscellaneous configuration and getting
+     started suggestions
+   - First see the [[http://www.gnu.org/software/emacs/manual/html_node/emacs/Customization.html#Customization][Customization]] node in the Emacs manual.  Available
+     online or through the =info= command (run with =C-h i=).
+   - =grep='ing through the =starter-kit-*= files in this directory
+     can provide useful examples for how to do things like install
+     major modes, define keybindings, etc..
+   - read the following [[http://www.gnu.org/software/emacs/elisp/html_node/Key-Binding-Conventions.html][Key-Binding-Conventions]] before defining too
+     many personal key bindings
+
+*** Optional kicker packages
+The following customization packages are shipped with the kicker
+but are not loaded by default.  If you have code which you find
+generally useful please submit it to the kicker core!
+- [[file:kicker-eshell.org][eshell]]
+- [[file:kicker-g-client.org][g-client]]
+- [[file:kicker-gnus.org][gnus]]
+- [[file:kicker-haskell.org][haskell]]
+- [[file:kicker-js.org][js]]
+- [[file:kicker-lisp.org][lisp]]
+- [[file:kicker-misc-recommended.org][misc-recommended]]
+- [[file:kicker-org.org][org]]
+- [[file:kicker-perl.org][perl]]
+- [[file:kicker-python.org][python]]
+- [[file:kicker-ruby.org][ruby]]
+
+** El-Get and Emacs Lisp Package Archive
+   :PROPERTIES:
+   :CUSTOM_ID: emacs-lisp-package-archive
+   :END:
+Libraries from [[http://www.emacswiki.org/emacs-es/el-get][el-get]] or [[http://tromey.com/elpa][ELPA]] are preferred when available since
+dependencies are handled automatically, and the burden to update them
+is removed from the user.  ELPA is now an official part of Emacs so no
+special configuration is required to download and install packages.
+Packages installed through ELPA will be stored in the =App/lisp/elpa/=
+sub-directory of this directory. [[http://www.emacswiki.org/emacs-es/el-get#toc5][el-get]] is part of EmacsPortable.App
+and will be downloaded upon start.  All install packages will be
+stored in =App/lisp/el-get=.  Additionally, EmacsPortable.App recipes
+will be stored in =App/lisp/rcp=.
+
+You can also write a =el-get= recipie and submit it to =el-get=.  See
+[[elisp:(describe-variable 'el-get-sources)][el-get-sources]] for more information about writing recipes.
+
+* Implementation
+  :PROPERTIES:
+  :CUSTOM_ID: implementation
+  :END:
+
+This section contains all code implementing the Emacs Kicker.  It
+is probably safe to stop reading at this point unless you are
+interested in the actual code implementing the kicker.
+** Bootstrapping el-get.
+
+#+BEGIN_SRC emacs-lisp
+  (setq el-get-user-package-directory
+        (expand-file-name "pkg-init"
+                          kicker-dir))
+  (unless (require 'el-get nil t)
+    (when (executable-find "git")
+      (url-retrieve
+       "https://raw.github.com/mlf176f2/el-get/master/el-get-install.el"
+       (lambda (s)
+         (let (el-get-master-branch)
+           (end-of-buffer)
+           (eval-print-last-sexp))))))
+  (add-to-list 'el-get-recipe-path
+               (concat usb-app-dir "lisp/rcp"))
+  
+#+END_SRC
+
+** kicker basics
+
+- Load path etc.
+  This is defined in the 
+
+- Ubiquitous Packages which should be loaded on startup rather than
+  autoloaded on demand since they are likely to be used in every
+  session.
+  #+srcname: kicker-load-on-startup
+  #+begin_src emacs-lisp
+    (require 'cl)
+    (require 'saveplace)
+    (require 'ffap)
+    (require 'uniquify)
+    (require 'ansi-color)
+    (require 'recentf)
+  #+end_src
+
+- ELPA archive repositories and two packages to install by default.
+  #+begin_src emacs-lisp
+    (setq package-archives
+          '(("original"    . "http://tromey.com/elpa/")
+            ("gnu"         . "http://elpa.gnu.org/packages/")
+            ("marmalade"   . "http://marmalade-repo.org/packages/")
+            ("technomancy" . "http://repo.technomancy.us/emacs/")
+            ("kjhealy" . "http://kieranhealy.org/packages/")))
+    (package-initialize)
+    
+    (unless package-archive-contents
+      (package-refresh-contents))
+  #+end_src
+
+- Functions for loading other parts of the kicker
+#+srcname: kicker-load
+  #+begin_src emacs-lisp
+    (defun kicker-load (file &optional header-or-tag)
+      "Load configuration from other kicker-*.org files.
+    If the optional argument is the id of a subtree then only
+    configuration from within that subtree will be loaded.  If it is
+    not an id then it will be interpreted as a tag, and only subtrees
+    marked with the given tag will be loaded.
+    
+    For example, to load all of kicker-lisp.org simply
+    add (kicker-load \"lisp\") to your configuration.
+    
+    To load only the 'window-system' config from
+    kicker-misc-recommended.org add
+     (kicker-load \"misc-recommended\" \"window-system\")
+    to your configuration."
+      (let ((file (expand-file-name (if (string-match "kicker-.+\.org" file)
+                                        file
+                                      (format "kicker-%s.org" file))
+                                    kicker-dir)))
+        (kicker-load-org
+         (if header-or-tag
+             (let* ((base (file-name-nondirectory file))
+                    (dir  (file-name-directory file))
+                    (partial-file (expand-file-name
+                                   (concat "." (file-name-sans-extension base)
+                                           ".part." header-or-tag ".org")
+                                   dir)))
+               (unless (file-exists-p partial-file)
+                 (with-temp-file partial-file
+                   (insert
+                    (with-temp-buffer
+                      (insert-file-contents file)
+                      (save-excursion
+                        (condition-case nil ;; collect as a header
+                            (progn
+                              (org-link-search (concat"#"header-or-tag))
+                              (org-narrow-to-subtree)
+                              (buffer-string))
+                          (error ;; collect all entries with as tags
+                           (let (body)
+                             (org-map-entries
+                              (lambda ()
+                                (save-restriction
+                                  (org-narrow-to-subtree)
+                                  (setq body (concat body "\n" (buffer-string)))))
+                              header-or-tag)
+                             body))))))))
+               partial-file)
+           file))))
+    
+  #+end_src
+- Work around a bug on OS X where system-name is FQDN.
+  #+srcname: kicker-osX-workaround
+  #+begin_src emacs-lisp
+    (if (eq system-type 'darwin)
+        (setq system-name (car (split-string system-name "\\."))))
+  #+end_src
+
+** Kicker Components
+- Kicker keybindings
+#+BEGIN_SRC emacs-lisp
+  (mapc
+     (lambda(package)
+       (kicker-load (concat "kicker-" package ".org")))
+     '("defuns" "bindings" "misc" "org"))
+  
+#+END_SRC
+
+*** Tabbar-Ruler
+This gives a tabbar upon mouse movement, and ruler when typing.  Also
+the menu-bar and toolbar are auto-hidden.  These options can be
+changed below:
+#+BEGIN_SRC emacs-lisp
+  (setq tabbar-ruler-global-tabbar 't) ; If you want tabbar
+  (setq tabbar-ruler-global-ruler 't) ; if you want a global ruler
+  (setq tabbar-ruler-popup-menu 't) ; If you want a popup menu.
+  (setq tabbar-ruler-popup-toolbar 't) ; If you want a popup toolbar
+#+END_SRC
+** Kicker core
+   :PROPERTIES:
+   :CUSTOM_ID: kicker-core
+   :END:
+The following files contain the remainder of the core of the Emacs
+Kicker.  All of the code in this section should be loaded by
+everyone using the kicker.
+
+Also the kicker sets up the variable kicker-sources below:
+
+#+BEGIN_SRC emacs-lisp
+  (setq kicker-sources '(yas-jit auto-complete auto-indent-mode
+                                 autopair smex tabbar-ruler idomenu
+                                 nxhtml auto-complete-emacs-lisp
+                                 auto-complete-etags
+                                 auto-complete-yasnippet
+                                 )
+        ;;"Sources for the kicker package"
+        )
+  
+#+END_SRC
+
+** Load User/System Specific Files
+*** System/User specific customizations
+You can keep system- or user-specific customizations here in either
+raw emacs-lisp files or as embedded elisp in org-mode files (as done
+in this document).
+
+You can keep elisp source in the =App/lisp/src= or =Data/src/= directory.  Packages loaded
+from here will override those installed by ELPA.  This is useful if
+you want to track the development versions of a project, or if a
+project is not in elpa.
+
+After we've loaded all the Kicker defaults, lets load the User's stuff.
+#+srcname: kicker-load-files
+#+begin_src emacs-lisp
+  (flet ((in-kit (file &optional ext)
+                 (expand-file-name (concat file ext) kicker-dir)))
+    (let ((system-specific-config          (in-kit system-name ".el"))
+          (system-specific-literate-config (in-kit system-name ".org"))
+          (system-specific-encrypted-config (in-kit system-name ".org.gpg"))
+          (user-specific-config            (in-kit user-login-name ".el"))
+          (user-specific-literate-config   (in-kit user-login-name ".org"))
+          (user-specific-encrypted-config   (in-kit user-login-name ".org.gpg"))
+          (user-specific-dir               (in-kit user-login-name))
+          (elisp-source-dir (concat kicker-dir "src")))
+      ;; add the src directory to the load path
+      (add-to-list 'load-path elisp-source-dir)
+      ;; load specific files
+      (when (file-exists-p elisp-source-dir)
+        (let ((default-directory elisp-source-dir))
+          (normal-top-level-add-subdirs-to-load-path)))
+      (when (file-exists-p system-specific-config)
+        (load system-specific-config))
+      (when (file-exists-p system-specific-literate-config)
+        (org-babel-load-file system-specific-literate-config))
+      (when (file-exists-p system-specific-encrypted-config)
+        (org-babel-load-file system-specific-literate-config))
+      
+      (when (file-exists-p user-specific-config)
+        (load user-specific-config))
+      
+      (when (file-exists-p user-specific-literate-config)
+        (org-babel-load-file user-specific-literate-config))
+      
+      (when (file-exists-p user-specific-encrypted-config)
+        (org-babel-load-file user-specific-literate-config))
+      ;; add user's directory to the load path
+      (add-to-list 'load-path user-specific-dir)
+      ;; load any files in the user's directory
+      (when (file-exists-p user-specific-dir)
+        (let ((default-directory user-specific-dir))
+          (mapc #'load
+                (directory-files user-specific-dir nil ".*el$"))
+          (mapc #'org-babel-load-file
+                (directory-files user-specific-dir nil ".*org$"))
+          (mapc (lambda(file)
+                  (let ((literate-file (substring file 0 -4)))
+                    (org-babel-load-file literate-file)))
+                (directory-files user-specific-dir nil ".*org.gpg$"))))))
+  
+#+end_src
+
+*** Settings from M-x customize
+#+srcname: m-x-customize-customizations
+#+begin_src emacs-lisp
+  (load custom-file 'noerror)
+#+end_src
+
+** At the very end 
+#+BEGIN_SRC emacs-lisp 
+  (el-get 'sync kicker-sources)
+  (el-get 'sync)
+  (setq debug-on-error nil)
+#+END_SRC
+
+* Kicker Wishlist/Todos
+** STARTED Fix the indentation in Emacs comment logs
+:LOGBOOK:
+CLOCK: [2011-12-16 Fri 10:26]--[2011-12-16 Fri 10:47] =>  0:21
+CLOCK: [2011-12-16 Fri 10:14]--[2011-12-16 Fri 10:24] =>  0:10
+CLOCK: [2011-12-16 Fri 10:04]--[2011-12-16 Fri 10:14] =>  0:10
+CLOCK: [2011-12-16 Fri 09:26]--[2011-12-16 Fri 09:50] =>  0:24
+:END:
+[2011-12-16 Fri 08:29]
+[[file:p:/PK0073/S01/R00/7_Figures/R/vpc-rabbit.R::##%20File:%20p:/PK0073/S01/R00/7_Figures/R/vpc-rabbit.R][file:p:/PK0073/S01/R00/7_Figures/R/vpc-rabbit.R::## File: p:/PK0073/S01/R00/7_Figures/R/vpc-rabbit.R]]
+** TODO Make Byte compiling optional.
+** TODO Add encrypted loading of files
+https://github.com/eschulte/emacs24-kicker/pull/19/files
+* Footnotes
+
+[1] If you already have a directory at =~/.emacs.d= move it out of the
+    way and put this there instead.
+
+[2] The emacs kicker uses [[http://orgmode.org/][Org Mode]] to load embedded elisp code
+    directly from literate Org-mode documents.
+

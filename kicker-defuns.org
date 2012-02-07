@@ -1,0 +1,67 @@
+#+TITLE: Kicker Defuns
+#+OPTIONS: toc:nil num:nil ^:nil
+
+This is part of the [[file:kicker.org][Emacs Kicker]].
+
+* The kicker-coding-hook:
+A single hook holding those functions which should be run in *every*
+code buffer.
+
+We have a number of turn-on-* functions since it's advised that lambda
+functions not go in hooks. Repeatedly evaling an add-to-list with a
+hook value will repeatedly add it since there's no way to ensure that
+a lambda doesn't already exist in the list.
+
+#+srcname: kicker-hook-functions
+#+begin_src emacs-lisp
+  (defun kicker-local-column-number-mode ()
+    (make-local-variable 'column-number-mode)
+    (column-number-mode t))
+  
+  (defun kicker-local-comment-auto-fill ()
+    (set (make-local-variable 'comment-auto-fill-only-comments) t)
+    (auto-fill-mode t))
+  
+  (defun kicker-turn-on-save-place-mode ()
+    (setq save-place t))
+  
+  (defun kicker-turn-on-whitespace ()
+    (whitespace-mode t))
+  
+  
+  (defun kicker-turn-on-flyspell-prog-mode ()
+    (flyspell-prog-mode))
+  
+  (defun kicker-turn-on-org-table-comment-mode ()
+    (when (fboundp 'org-table-comment-mode)
+      (org-table-comment-mode 1)))
+  
+#+end_src
+
+#+srcname: kicker-add-local-column-number-mode
+#+begin_src emacs-lisp
+(add-hook 'kicker-coding-hook 'kicker-local-column-number-mode)
+#+end_src
+
+#+srcname: start-kit-add-local-comment-auto-fill
+#+begin_src emacs-lisp
+(add-hook 'kicker-coding-hook 'kicker-local-comment-auto-fill)
+#+end_src
+
+#+srcname: kicker-add-pretty-lambdas
+#+begin_src emacs-lisp
+  (when (window-system)
+    (add-hook 'kicker-coding-hook 'kicker-pretty-lambdas))
+#+end_src
+
+#+srcname: kicker-add-flyspell-prog-mode
+#+begin_src emacs-lisp
+  (add-hook 'kicker-coding-hook 'kicker-turn-on-flyspell-prog-mode)
+#+end_src
+
+#+srcname: kicker-run-kicker-coding-hook
+#+begin_src emacs-lisp
+(defun run-kicker-coding-hook ()
+  "Enable things that are convenient across all coding buffers."
+  (run-hooks 'kicker-coding-hook))
+#+end_src

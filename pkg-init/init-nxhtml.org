@@ -1,0 +1,13 @@
+#+TITLE: NXhtml Startup
+#+AUTHOR: Matthew L. Fidler
+* Introduction
+Nxhtml is a suite of commands primarily used to edit HTML files.
+** Other functionality
+*** Sex-mode
+Sex mode is used to open files in external appliactions if
+appropriate.
+
+#+BEGIN_SRC emacs-lisp
+(sex-mode 1)
+#+END_SRC
+

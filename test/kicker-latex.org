@@ -1,0 +1,59 @@
+#+TITLE: Kicker LaTeX
+#+AUTHOR: Matthew L. Fidler
+This is part of the [[file:kicker.org][EmacsPortable Kicker]]
+* Load Packages
+This should be done with ELPA
+* RefTeX
+Turn on RefTeX
+#+BEGIN_SRC emacs-lisp
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+#+END_SRC
+
+You should setup the =reftex-default-bibliography= in your personal
+setup
+* Sumatra PDF
+This sets up EmacsPortable.App to use SumatraPDF on windows when it is
+installed in your USB drives under either:
+- USB:/PortableApps/SumatraPDFPortable
+- USB:/SumatraPDFPortable
+
+This assumes you use the PortableApps version of SumatraPortable. It
+also assumes you have the script [[file:./bat/sumatra.bat][sumatra.bat]] in the =bat= directory of
+the kicker. The path is adjusted in the EmacsPortableApp.exe launcher.
+
+  #+BEGIN_SRC emacs-lisp
+    (when (eq system-type 'windows-nt)
+      (defun kicker-turn-on-sumatra ()
+        "Turns on sumatra forward and backward search"
+        (let ((sumatra (concat usb-drive-letter
+                               "PortableApps/SumatraPDFPortable")))
+          (unless (file-exists-p sumatra)
+            (setq sumatra
+                  (concat usb-drive-letter
+                          "SumatraPDFPortable")))
+          
+          (when (file-exists-p sumatra)
+            (setq LaTeX-command "latex -synctex=1")
+            (setq TeX-command "tex -synctex=1")
+            (setq TeX-engine-alist-builtin
+                  '((default "Default" TeX-command LaTeX-command ConTeXt-engine)
+                    (xetex "XeTeX" "xetex -synctex=1" "xelatex -synctex=-1" "xetex -synctex=1")
+                    (luatex "LuaTeX" "luatex" "lualatex" "luatex")
+                    (omega "Omega" TeX-Omega-command LaTeX-Omega-command ConTeXt-Omega-engine)))
+            (setq TeX-view-program-list '(("Sumatra" "Sumatra.bat %o %t %n") ))
+            (setq TeX-view-program-selection '((output-pdf "Sumatra") (output-dvi "Yap"))))
+          (require 'sumatra-forward nil t))
+        (remove-hook 'tex-mode-hook 'kicker-turn-on-sumatra)
+        (remove-hook 'latex-mode-hook 'kicker-turn-on-sumatra)
+        (remove-hook 'TeX-mode-hook 'kicker-turn-on-sumatra)
+        (remove-hook 'LaTeX-mode-hook 'kicker-turn-on-sumatra))
+      (add-hook 'tex-mode-hook 'kicker-turn-on-sumatra)
+      (add-hook 'latex-mode-hook 'kicker-turn-on-sumatra)
+      (add-hook 'TeX-mode-hook 'kicker-turn-on-sumatra)
+      (add-hook 'LaTeX-mode-hook 'kicker-turn-on-sumatra))
+    
+  #+END_SRC
+* Automagic detection of master file
+See http://www.emacswiki.org/emacs/AUCTeX#toc18
+
+

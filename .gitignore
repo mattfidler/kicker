@@ -1,0 +1,51 @@
+*_archive
+## misc
+#starter-kit.el#
+init.el~
+starter-kit.org~        
+loaddefs.el*
+auto-save-list
+custom.el
+places
+.svn
+.DS_Store
+tramp
+.#.gitignore
+
+## directories
+backups/*
+thumbs/*
+oddmuse/*
+eshell/*
+image-dired/*
+elim/*
+doc/*
+elpa/*
+src/*
+themes/*
+url/*
+
+## exported files
+*el
+*elc
+*html
+*tex
+*pdf
+*txt
+
+## org stuff
+.org-id-locations
+
+## ignore mail/gnus cruft for those who keep mail in this directory
+drafts
+Mail
+mail
+.newsrc-dribble
+.nnmail-cache
+/#.newsrc-dribble#
+*.SCORE
+marks
+
+*~
+*#
+*.el.gz

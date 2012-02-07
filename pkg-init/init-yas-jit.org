@@ -1,0 +1,45 @@
+#+TITLE: Yasnippet Startup
+#+AUTHOR: Matthew L. Fidler
+* Introduction
+[[http://code.google.com/p/yasnippet/][yasnippet]] is yet another snippet expansion system for Emacs.  It is
+  inspired by TextMate's templating syntax.
+  - watch the [[http://www.youtube.com/watch?v=vOj7btx3ATg][video on YouTube]]
+  - see the [[http://yasnippet.googlecode.com/svn/trunk/doc/index.html][intro and tutorial]]
+
+  load the yasnippet bundle using yas-jit
+  #+begin_src emacs-lisp
+    (when (boundp 'usb-site-lisp-dir)
+      (let ((snip
+             (expand-file-name "snippets"
+                               (concat usb-site-lisp-dir "../Data"))))
+        (if (listp yas/root-directory)
+            (progn
+              (setq yas/root-directory
+                    (append (list snip)
+                            yas/root-directory)))
+          (setq yas/root-directory
+                (list snip yas/root-directory)))))
+    (yas/jit-load)
+    
+  #+end_src
+* Org-mode fixes
+  The latest version of yasnippets doesn't play well with Org-mode, the
+  following function allows these two to play nicely together.
+  #+begin_src emacs-lisp
+    (defun yas/org-very-safe-expand ()
+      (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
+    
+    (defun yas/org-setup ()
+      ;; yasnippet (using the new org-cycle hooks)
+      (make-variable-buffer-local 'yas/trigger-key)
+      (setq yas/trigger-key [tab])
+      (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+      (define-key yas/keymap [tab] 'yas/next-field))
+    
+  #+end_src
+* Load/Install Yasnippet and yas-jit
+#+BEGIN_SRC emacs-lisp
+  (kicker-m "Load Yasnippet.")
+  (yas/global-mode 1)
+  (add-hook 'org-mode-hook #'yas/org-setup)  
+#+END_SRC
