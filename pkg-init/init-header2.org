@@ -1,0 +1,7 @@
+#+TITLE: Automatic Header Setup
+#+AUTHOR: Matthew L. Fidler
+* Introduction
+I like automatic header creation for Emacs.  
+ #+BEGIN_SRC emacs-lisp
+   (require 'header2)
+ #+END_SRC

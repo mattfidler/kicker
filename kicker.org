@@ -441,6 +441,7 @@ CLOCK: [2011-12-16 Fri 09:26]--[2011-12-16 Fri 09:50] =>  0:24
 ** TODO Make Byte compiling optional.
 ** TODO Add encrypted loading of files
 https://github.com/eschulte/emacs24-kicker/pull/19/files
+** TODO Add per-package loading of pre-installed libraries (like emacs-lisp)
 * Footnotes
 
 [1] If you already have a directory at =~/.emacs.d= move it out of the
