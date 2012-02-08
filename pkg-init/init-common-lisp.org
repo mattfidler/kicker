@@ -1,0 +1,20 @@
+#+TITLE: Kicker Common Lisp
+#+OPTIONS: toc:nil num:nil ^:nil
+
+This is part of the [[file:starter-kit.org][Emacs Kicker]].
+
+* Kicker Lisp
+Support for editing [[* Common Lisp][Common Lisp]],
+
+** Common Lisp
+   :PROPERTIES:
+   :CUSTOM_ID: common-lisp
+   :END:
+
+#+begin_src emacs-lisp
+(add-hook 'lisp-mode-hook 'run-kicker-coding-hook)
+;; (add-hook 'lisp-mode-hook 'idle-highlight)
+
+(font-lock-add-keywords 'lisp-mode
+			'(("(\\|)" . 'kicker-paren-face)))
+#+end_src

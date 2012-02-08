@@ -1,0 +1,15 @@
+#+TITLE: Scheme Startup Options
+#+AUTHOR: Matthew L. Fidler
+* Introduction
+ [[* Scheme][Scheme]] support.
+** Scheme
+   :PROPERTIES:
+   :CUSTOM_ID: scheme
+   :END:
+
+#+begin_src emacs-lisp
+(add-hook 'scheme-mode-hook 'run-kicker-coding-hook)
+;; (add-hook 'scheme-mode-hook 'idle-highlight)
+(font-lock-add-keywords 'scheme-mode
+			'(("(\\|)" . 'kicker-paren-face)))
+#+end_src

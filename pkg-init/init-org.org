@@ -1,0 +1,163 @@
+#+TITLE: Kicker Org
+#+OPTIONS: toc:nil num:nil ^:nil
+
+This is part of the [[file:kicker.org][Emacs Kicker]].
+
+* Kicker Org
+Configuration for the eminently useful [[http://orgmode.org/][Org Mode]].
+
+Org-mode is for keeping notes, maintaining ToDo lists, doing project
+planning, and authoring with a fast and effective plain-text system.
+Org Mode can be used as a very simple folding outliner or as a complex
+GTD system or tool for reproducible research and literate programming.
+
+For more information on org-mode check out [[http://orgmode.org/worg/][worg]], a large Org-mode wiki
+which is also *implemented using* Org-mode and [[http://git-scm.com/][git]].
+
+** Speed keys
+   :PROPERTIES:
+   :CUSTOM_ID: speed-keys
+   :END:
+Speed commands enable single-letter commands in Org-mode files when
+the point is at the beginning of a headline, or at the beginning of a
+code block.
+
+See the `=org-speed-commands-default=' variable for a list of the keys
+and commands enabled at the beginning of headlines.  All code blocks
+are available at the beginning of a code block, the following key
+sequence =C-c C-v h= (bound to `=org-babel-describe-bindings=') will
+display a list of the code blocks commands and their related keys.
+
+#+begin_src emacs-lisp
+  (setq org-use-speed-commands t)
+#+end_src
+
+** Code blocks
+   :PROPERTIES:
+   :CUSTOM_ID: babel
+   :END:
+This activates a number of widely used languages, you are encouraged
+to activate more languages using the customize interface for the
+`=org-babel-load-languages=' variable, or with an elisp form like the
+one below.  The customize interface of `=org-babel-load-languages='
+contains an up to date list of the currently supported languages.
+#+begin_src emacs-lisp
+  
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((R . t)
+     (ditaa . t)
+     (plantuml . t)
+     (emacs-lisp . t)
+     (gnuplot . nil)
+     (haskell . nil)
+     (latex . t) ; this is the entry to activate LaTeX
+     (ocaml . nil)
+     (perl . t)
+     (python . t)
+     (ruby . t)
+     (screen . nil)
+     (sh . t)
+     (sql . nil)
+     (sqlite . nil)))
+  
+#+end_src
+
+You are encouraged to add the following to your personal configuration
+although it is not added by default as a security precaution.
+#+begin_src emacs-lisp
+  (setq org-confirm-babel-evaluate nil)
+#+end_src
+
+** Code block fontification
+   :PROPERTIES:
+   :CUSTOM_ID: code-block-fontification
+   :END:
+The following displays the contents of code blocks in Org-mode files
+using the major-mode of the code.  It also changes the behavior of
+=TAB= to as if it were used in the appropriate major mode.  This means
+that reading and editing code form inside of your Org-mode files is
+much more like reading and editing of code using its major mode.
+#+begin_src emacs-lisp :tangle no
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t)
+#+end_src
+
+While useful, it also slows org-mode down alot.  I turn it off by
+default.  You can change the option by taking out the =:tangle= tag.
+
+** The Library of Babel
+   :PROPERTIES:
+   :CUSTOM_ID: library-of-babel
+   :END:
+The library of babel contains makes many useful functions available
+for use by code blocks in *any* emacs file.  See the actual
+=library-of-babel.org= (located in the Org-mode =contrib/babel=
+directory) file for information on the functions, and see
+[[http://orgmode.org/worg/org-contrib/babel/intro.php#library-of-babel][worg:library-of-babel]] for more usage information.
+
+Code blocks can be loaded into the library of babel from any Org-mode
+file using the `org-babel-lob-ingest' function.
+
+** EmacsPortable kicker specific configuration
+I would like to delete both =el= and =elc= files when saving any org
+files under the kicker directory. I would also like to delete the
+el and elc files under the =site-start.org= file.  After deleting the
+=site-start.el= file, tangle the buffer.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook 'kicker-remove-el-elc-on-save-org)
+  (defun kicker-remove-el-elc-on-save-org ()
+    "If you're saving a stater-kit org file, likely the .el .elc is no longer valid."
+    (make-local-variable 'after-save-hook)
+    (add-hook 'after-save-hook
+              (lambda ()
+                (let ((fn (file-name-sans-extension buffer-file-name)))
+                  (when (or (string-match (regexp-quote kicker-dir) fn)
+                            (string-match (regexp-quote "App/site-lisp/site-start") fn))
+                    (when (file-exists-p (concat fn ".el"))
+                      (delete-file (concat fn ".el")))
+                    (when (file-exists-p (concat fn ".elc"))
+                      (delete-file (concat fn ".elc")))
+                    (when (string-match (regexp-quote "App/site-lisp/site-start.org") fn)
+                      (call-interactively 'org-babel-tangle)))))))
+#+END_SRC
+
+
+** Default Keys
+ The default keys are discussed in [[http://orgmode.org/worg/org-tutorials/orgtutorial_dto.html][David O'Toole's tutorial]]
+
+#+BEGIN_SRC emacs-lisp
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(define-key global-map "\C-cb" 'org-iswitchb)
+(setq org-log-done t)
+#+END_SRC
+
+
+** Supported Babel Applications
+
+*** Ditaa
+
+This is under =App/jar/ditaa.jar=
+
+#+BEGIN_SRC emacs-lisp
+  (let ((f (concat usb-app-dir "jar/ditaa.jar")))
+    (when (file-exists-p f)
+      (setq org-ditaa-jar-path f)))
+  
+#+END_SRC
+
+
+*** PlantUML
+Plant UML is a markup language
+#+BEGIN_SRC emacs-lisp
+  (let ((f (concat usb-app-dir "jar/plantuml.jar")))
+    (when (file-exists-p f)
+      (setq plantuml-jar-path f)
+      (setq org-plantuml-jar-path f)
+      (autoload 'plantuml-mode "plantuml-mode" "Plant UML" t)
+      (autoload 'ob-plantuml "ob-plantuml" "Plant UML Org-mode interface" t)))
+  
+#+END_SRC
+

@@ -1,0 +1,15 @@
+#+TITLE: Org-style hide/show in code
+#+AUTHOR: Matthew L. Fidler
+* Introduction 
+[[https://github.com/secelis/hideshow-org][hideshow-org]] is a minor mode that allows code folding like =org-mode=.
+
+#+BEGIN_SRC emacs-lisp
+(require 'hideshow-org)
+#+END_SRC
+
+* Add to kicker coding hook
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'kicker-coding-hook 'hs-org/minor-mode)
+#+END_SRC
+
+

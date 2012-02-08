@@ -14,9 +14,10 @@ Support for the Python programming language.
 Replace the Python mode that comes with Emacs by the Python mode
 supplied by the Python distribution itself.
 #+begin_src emacs-lisp
-(require 'python-mode)
-(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-(add-to-list 'interpreter-mode-alist '("python" . python-mode))
+  (require 'python-mode nil t)
+  (when (featurep 'python-mode)
+    (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+    (add-to-list 'interpreter-mode-alist '("python" . python-mode)))
 #+end_src
 
 ** Use IPython if =ipython= command is present
@@ -36,8 +37,9 @@ the preferred method python evaluation.
    :CUSTOM_ID: cython
    :END:
 #+begin_src emacs-lisp
-(require 'cython-mode)
-(add-to-list 'auto-mode-alist '("\\.pyx\\'" . cython-mode))
-(add-to-list 'auto-mode-alist '("\\.pxd\\'" . cython-mode))
-(add-to-list 'auto-mode-alist '("\\.pxi\\'" . cython-mode))
+  (require 'cython-mode nil t)
+  (when (featurep 'cython-mode)
+    (add-to-list 'auto-mode-alist '("\\.pyx\\'" . cython-mode))
+    (add-to-list 'auto-mode-alist '("\\.pxd\\'" . cython-mode))
+    (add-to-list 'auto-mode-alist '("\\.pxi\\'" . cython-mode)))
 #+end_src

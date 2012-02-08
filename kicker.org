@@ -318,7 +318,7 @@ interested in the actual code implementing the kicker.
   (mapc
      (lambda(package)
        (kicker-load (concat "kicker-" package ".org")))
-     '("defuns" "bindings" "misc" "org"))
+     '("misc" "defuns"))
   
 #+END_SRC
 
@@ -352,6 +352,82 @@ Also the kicker sets up the variable kicker-sources below:
         ;;"Sources for the kicker package"
         )
   
+#+END_SRC
+
+** Kicker init preloaded packages
+In addition to customizing the startup of =el-get= packages, one may
+wish to customize the startup of built-in packages.  This is done by
+the following routine:
+#+BEGIN_SRC emacs-lisp
+  ;; needs-autoloading-p taken from http://www.emacswiki.org/emacs/completion-11-4.el
+  (defun kicker-needs-autoloading-p (symbol)
+    "True iff SYMBOL represents an autoloaded function and has not yet been autoloaded."
+    (and (fboundp symbol)
+         (listp (symbol-function symbol))
+         (eq 'autoload (car (symbol-function symbol)))
+         ))
+  
+  (defun kicker-get-autoload-file (symbol)
+    "Returns the autoload file for an autoloaded SYMBOL, or nil"
+    (and (fboundp symbol)
+         (listp (symbol-function symbol))
+         (eq 'autoload (car (symbol-function symbol)))
+         (message "%s" (symbol-function symbol))
+         (if (listp (nth 2 (symbol-function symbol)))
+             (concat (file-name-directory (car (nth 2 (symbol-function symbol))))
+                     (nth 1 (symbol-function symbol)))
+           (nth 1 (symbol-function symbol)))))
+  ;; load options for emacs internal packages...
+  (mapc
+   (lambda(x)
+     (let ((base (file-name-sans-extension x))
+           (ext (file-name-extension x))
+           (file x)
+           package status)
+       (message "Checking %s" x)
+       (setq package (substring (file-name-nondirectory base) 5))
+       (unless (and (string= ext "el") (file-readable-p (concat base ".org")))
+         (setq status (el-get-package-status package))
+         (when (and status (string= "removed" status))
+           (setq status nil))
+         (unless status
+           ;; Not currently handled by =el-get=, is it inline?
+           (message "Trying to load %s" package)
+           (when (intern package)
+             (when (fboundp (intern package))
+               (if (kicker-needs-autoloading-p (intern package))
+                   (progn
+                     (message "Autoloaded package %s" package)
+                     (if (string= ext "org")
+                         (eval-after-load (kicker-get-autoload-file (intern package))
+                           (condition-case err
+                               (org-babel-load-file file)
+                             (error (message "Error loading %s,%s" file err))))
+                       (eval-after-load (kicker-get-autoload-file (intern package))
+  mo                       (condition-case err
+                             (load-file base)
+                           (error (message "Error loading %s,%s" base err))))))
+                 (if (string= ext "org")
+                     (condition-case err
+                         (org-babel-load-file file)
+                       (error (message "Error loading %s,%s" file err)))
+                   (condition-case err
+                       (load-file file)
+                     (error (message "Error loading %s, %s" base err))))))
+             (when (intern (concat package "-mode"))
+               (when (fboundp (intern (concat package "-mode")))
+                 (if (kicker-needs-autoloading-p (intern (concat package "-mode")))
+                     (progn 
+                       (message "Autoloaded:  %s-mode" package)
+                       (if (string= ext "org")
+                           (eval-after-load (kicker-get-autoload-file (intern (concat package "-mode")))
+                             (org-babel-load-file file))
+                         (eval-after-load (kicker-get-autoload-file (intern (concat package "-mode")))
+                           (load-file base))))
+                   (if (string= ext "org")
+                       (org-babel-load-file file)
+                     (load-file file))))))))))
+   (directory-files (concat kicker-dir "pkg-init") t "init-.*[.]\\(org\\|el\\)"))
 #+END_SRC
 
 ** Load User/System Specific Files

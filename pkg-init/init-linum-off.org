@@ -1,0 +1,5 @@
+#+TITLE: Add line numbers for most modes.
+#+AUTHOR: Matthew L. Fidler
+#+BEGIN_SRC emacs-lisp
+(require 'linum-off)
+#+END_SRC
