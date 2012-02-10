@@ -49,3 +49,5 @@ marks
 *~
 *#
 *.el.gz
+/kicker-latex.org
+/kicker-nxhtml.org

@@ -313,14 +313,19 @@ interested in the actual code implementing the kicker.
   #+end_src
 
 ** Kicker Components
-- Kicker keybindings
-#+BEGIN_SRC emacs-lisp
-  (mapc
-     (lambda(package)
-       (kicker-load (concat "kicker-" package ".org")))
-     '("misc" "defuns"))
-  
-#+END_SRC
+- Kicker function definitions in [[file:kicker-defuns.org][kicker-defuns]]
+
+  #+begin_src emacs-lisp
+  (kicker-load "kicker-defuns.org")
+  #+end_src
+
+- Key Bindings in [[file:kicker-bindings.org][kicker-bindings]] have been disabled by default; I use
+  ergoemacs.
+
+- Miscellaneous settings in [[file:kicker-misc.org][kicker-misc]]
+  #+begin_src emacs-lisp
+  (kicker-load "kicker-misc.org")
+  #+end_src
 
 *** Tabbar-Ruler
 This gives a tabbar upon mouse movement, and ruler when typing.  Also

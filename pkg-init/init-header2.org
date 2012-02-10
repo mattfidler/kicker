@@ -4,4 +4,5 @@
 I like automatic header creation for Emacs.  
  #+BEGIN_SRC emacs-lisp
    (require 'header2)
+   (add-hook 'write-file-hooks 'auto-update-file-header)
  #+END_SRC

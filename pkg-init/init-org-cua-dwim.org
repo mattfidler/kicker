@@ -1,0 +1,10 @@
+#+TITLE: CUA mode in Org
+#+AUTHOR: Matthew L. Fidler
+* Introduction
+I like to use CUA mode in org.  Therefore, I use the work-around
+org-cua-dwim.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'org-cua-dwim)
+  (org-cua-dwim-activate)
+#+END_SRC

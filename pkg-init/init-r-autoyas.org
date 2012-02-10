@@ -1,0 +1,7 @@
+#+TITLE: Setup R-autoyas
+#+AUTHOR: Matthew L. Fidler
+
+#+BEGIN_SRC emacs-lisp
+  (require 'r-autoyas)
+  (add hook 'ess-mode-hook 'r-autoyas-ess-activate)
+#+END_SRC

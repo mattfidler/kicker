@@ -48,6 +48,15 @@ a lambda doesn't already exist in the list.
 (add-hook 'kicker-coding-hook 'kicker-local-comment-auto-fill)
 #+end_src
 
+#+begin_src emacs-lisp
+  (defun kicker-pretty-lambdas ()
+    (font-lock-add-keywords
+     nil `(("(\\(lambda\\>\\)"
+            (0 (progn (compose-region (match-beginning 1) (match-end 1)
+                                      ,(make-char 'greek-iso8859-7 107))
+                      nil))))))
+#+end_src
+
 #+srcname: kicker-add-pretty-lambdas
 #+begin_src emacs-lisp
   (when (window-system)

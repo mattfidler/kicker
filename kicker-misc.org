@@ -197,20 +197,6 @@ This requires =lib-requires= and =header2=
   ;; Seed the random-number generator
   (random t)
 #+end_src
-
-*** functions for prettier source code
-#+begin_src emacs-lisp
-  (defun kicker-pretty-lambdas ()
-    (font-lock-add-keywords
-     nil `(("(\\(lambda\\>\\)"
-            (0 (progn (compose-region (match-beginning 1) (match-end 1)
-                                      ,(make-char 'greek-iso8859-7 107))
-                      nil))))))
-#+end_src
-*** possible issues/resolutions with flyspell
-Most of the solution came from [[http://www.emacswiki.org/emacs/FlySpell][EmacsWiki-FlySpell]].  Here is one
-possible fix.
-
 ** Hippie expand: at times perhaps too hip
 #+begin_src emacs-lisp
 (delete 'try-expand-line hippie-expand-try-functions-list)

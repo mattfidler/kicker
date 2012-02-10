@@ -1,0 +1,8 @@
+#+TITLE: Ido Ubiquitous
+#+AUTHOR: Matthew L. Fidler
+* Intro
+Tunr on ido support everywhere.
+
+#+BEGIN_SRC emacs-lisp
+(ido-ubiqutous 1)
+#+END_SRC
