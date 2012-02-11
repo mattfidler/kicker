@@ -161,3 +161,11 @@ Plant UML is a markup language
   
 #+END_SRC
 
+** Add useful hooks
+I think that =auto-fill-mode= and =flyspell-mode=.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook 'auto-fill-mode)
+  (add-hook 'org-mode-hook 'flyspell-mode)
+#+END_SRC
+
