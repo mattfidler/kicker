@@ -1,6 +1,0 @@
-#+TITLE: Initialize ESS drag and drop
-#+AUTHOR: Matthew L. Fidler
-#+BEGIN_SRC emacs-lisp
-(require 'ess-dnd)
-(ess-drag-and-drop-activate)
-#+END_SRC

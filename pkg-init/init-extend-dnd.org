@@ -1,0 +1,6 @@
+#+TITLE: Initialize Extended drag and drop
+#+AUTHOR: Matthew L. Fidler
+#+BEGIN_SRC emacs-lisp
+  (require 'extend-dnd)
+  (extend-dnd-activate)
+#+END_SRC

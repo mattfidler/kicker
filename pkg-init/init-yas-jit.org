@@ -37,6 +37,11 @@
       (define-key yas/keymap [tab] 'yas/next-field))
     
   #+end_src
+* Use snippet wrapping via 'cua
+#+BEGIN_SRC emacs-lisp
+(setq yas/wrap-around-region 'cua)
+#+END_SRC
+
 * Load/Install Yasnippet and yas-jit
 #+BEGIN_SRC emacs-lisp
   (kicker-m "Load Yasnippet.")
