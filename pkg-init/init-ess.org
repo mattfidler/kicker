@@ -127,7 +127,7 @@ I also like the R-autoyas completion.
   (if (fboundp 'r-autoyas-ess-activate)
       (add-hook 'ess-mode-hook 'r-autoyas-ess-activate)
     (require 'r-autoyas nil t)
-    (when (and (featurp 'r-autoyas)
+    (when (and (featurep 'r-autoyas)
                (fboundp 'r-autoyas-ess-activate))
       (add-hook 'ess-mode-hook 'r-autoyas-ess-activate)))
 #+END_SRC
