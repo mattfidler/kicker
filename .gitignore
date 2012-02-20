@@ -1,7 +1,6 @@
 *_archive
 ## misc
 #starter-kit.el#
-init.el~
 starter-kit.org~        
 loaddefs.el*
 auto-save-list
@@ -26,12 +25,12 @@ themes/*
 url/*
 
 ## exported files
-*el
-*elc
-*html
-*tex
-*pdf
-*txt
+kick*el
+kick*elc
+kick*html
+kick*tex
+kick*pdf
+kick*txt
 
 ## org stuff
 .org-id-locations
@@ -51,3 +50,5 @@ marks
 *.el.gz
 /kicker-latex.org
 /kicker-nxhtml.org
+init-*.el
+init-*.elc
