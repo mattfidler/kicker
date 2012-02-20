@@ -1,7 +1,7 @@
 #+TITLE: Portable Kicker
 #+AUTHOR: Matthew L. Fidler
 * Introduction 
- This is a combination of the [[https://github.com/eschulte/emacs24-starter-kit][Eric Schulte's emacs24 starter kit]] and
+ This is a combination of the [[https://github.com/eschulte/emacs24-kicker][Eric Schulte's emacs24 starter kit]] and
  [[https://github.com/dimitri/emacs-kicker][Dimitri's emacs-kicker]].  I like the idea of a literate startup as
  well as el-get's idea of getting packages from anywhere.  The
  advantage for me is my packages are managed under =git=.  
@@ -37,7 +37,7 @@ If you want to keep your regular =~/.emacs.d= in place and just launch
 a single instance using the kicker, try the following invocation:
 
 #+begin_src sh
-  emacs -q -l ~/path/to/emacs24-starter-kit/init.el
+  emacs -q -l ~/path/to/emacs24-kicker/init.el
 #+end_src
 
 Note that having a =~/.emacs= file might override the kicker
@@ -65,8 +65,8 @@ most users customization of Emacs to suite their needs.  The starter
 kit provides a number of places for additional user and system
 specific customization.  These are designed in such a way that it will
 be easy for you to continue tracking your own personal customization
-inside the starter-kit while retaining your ability to pull down
-general starter-kit updates without conflict.
+inside the kicker while retaining your ability to pull down
+general kicker updates without conflict.
 
 - git branch :: The first step to user-specific customization is (like
      in any git project) to MAKE A BRANCH FOR YOUR LOCAL CHANGES.
@@ -110,33 +110,33 @@ general starter-kit updates without conflict.
 - Activating more of the kicker :: By default, the kicker
      only includes customizations which are likely to be useful across
      nearly any Emacs install (the only automatically loaded external
-     files are those listed in [[#load-the-starter-kit-core][Load the rest of the kicker core]]).
+     files are those listed in [[#load-the-kicker-core][Load the rest of the kicker core]]).
      You may have noticed that there are many other
-     =starter-kit-*.org= files located in this directory.  A good
+     =kicker-*.org= files located in this directory.  A good
      first step is to browse these files and begin optionally loading
      those that look relevant to your workflow.  For example, if you
      often work with Python source code you will probably want to load
-     =starter-kit-python.org= either by directly copying the sections
+     =kicker-python.org= either by directly copying the sections
      that look useful into your personal config, or simply by loading
      the entire file directly with the following.
      #+begin_src emacs-lisp
-       (starter-kit-load "python")
+       (kicker-load "python")
      #+end_src
 
      Alternately you can load only one particular subsection of an
      included file, for example to load just the "pretty-summary"
-     section of =starter-kit-gnus.org= run the following.
+     section of =kicker-gnus.org= run the following.
      #+begin_src emacs-lisp
-       (starter-kit-load "gnus" "pretty-summary")
+       (kicker-load "gnus" "pretty-summary")
      #+end_src
      
      Finally you can load just those subsections of a file which have
      a specific tag, so to load just the two sections of
-     =starter-kit-misc-recommended.org= which are tagged =visual= add
+     =kicker-misc-recommended.org= which are tagged =visual= add
      the following to your personal initialization.  Note: header id's
      take priority over tags.
      #+begin_src emacs-lisp
-       (starter-kit-load "gnus" "visual")
+       (kicker-load "gnus" "visual")
      #+end_src
 
 - Installing more elisp libraries :: The easiest way to install new
@@ -146,7 +146,7 @@ general starter-kit updates without conflict.
      and place it directly in the =/Data/src= directory.  Any packages
      found there will automatically be added to your load-path when
      Emacs starts up, and are guaranteed not to conflict with future
-     starter-kit updates.  If you are adventurous, you can write your
+     kicker updates.  If you are adventurous, you can write your
      own [[http://www.emacswiki.org/emacs-es/el-get#toc5][el-get]] recipes to install. See [[elisp:(describe-variable 'el-get-sources)][el-get-sources]] for more
      information about writing recipes.
 
@@ -154,7 +154,7 @@ general starter-kit updates without conflict.
      started suggestions
    - First see the [[http://www.gnu.org/software/emacs/manual/html_node/emacs/Customization.html#Customization][Customization]] node in the Emacs manual.  Available
      online or through the =info= command (run with =C-h i=).
-   - =grep='ing through the =starter-kit-*= files in this directory
+   - =grep='ing through the =kicker-*= files in this directory
      can provide useful examples for how to do things like install
      major modes, define keybindings, etc..
    - read the following [[http://www.gnu.org/software/emacs/elisp/html_node/Key-Binding-Conventions.html][Key-Binding-Conventions]] before defining too
@@ -407,18 +407,26 @@ the following routine:
                          (eval-after-load (kicker-get-autoload-file (intern package))
                            (condition-case err
                                (org-babel-load-file file)
-                             (error (message "Error loading %s,%s" file err))))
+                             (error (if kicker-grace
+                                        (message "Error loading %s,%s" file err)
+                                      (error "Error loading %s,%s" file err)))))
                        (eval-after-load (kicker-get-autoload-file (intern package))
-  mo                       (condition-case err
+                           (condition-case err
                              (load-file base)
-                           (error (message "Error loading %s,%s" base err))))))
+                             (error (if kicker-grace
+                                        (message "Error loading %s,%s" base err)
+                                      (error "Error loading %s,%s" base err)))))))
                  (if (string= ext "org")
                      (condition-case err
                          (org-babel-load-file file)
-                       (error (message "Error loading %s,%s" file err)))
+                       (error (if kicker-grace
+                                  (message "Error loading %s,%s" file err)
+                                (error "Error loading %s,%s" file err))))
                    (condition-case err
                        (load-file file)
-                     (error (message "Error loading %s, %s" base err))))))
+                     (error (if kicker-grace
+                                (message "Error loading %s, %s" base err)
+                              (error "Error loading %s, %s" base err)))))))
              (when (intern (concat package "-mode"))
                (when (fboundp (intern (concat package "-mode")))
                  (if (kicker-needs-autoloading-p (intern (concat package "-mode")))
@@ -433,6 +441,7 @@ the following routine:
                        (org-babel-load-file file)
                      (load-file file))))))))))
    (directory-files (concat kicker-dir "pkg-init") t "init-.*[.]\\(org\\|el\\)"))
+  
 #+END_SRC
 
 ** Load User/System Specific Files

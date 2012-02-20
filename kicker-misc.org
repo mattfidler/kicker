@@ -104,7 +104,7 @@ evaluated a theme is activated using the =load-theme= function.
 (show-paren-mode 1)
 #+end_src
 
-** ido mode
+
 ido-mode is like magic pixie dust!
 
 When using EmacsPortable.App in Windows & MacOS, a single =~/.ido.last=
@@ -140,46 +140,6 @@ explanation of these customizations.
   
 #+end_src
 
-*** smex mode
-Smex is ido for M-x
-#+BEGIN_SRC emacs-lisp
-(smex-initialize)
-#+END_SRC
-: 
-*** ido-ubiquitous
-Make IDO more ubiquitous
-#+BEGIN_SRC emacs-lisp
-  (when (fboundp 'ido-ubiquitous-mode)
-    (ido-ubiquitous-mode 1))
-#+END_SRC
-
-** Line Numbering mode
-#+BEGIN_SRC emacs-lisp
-(require 'linum-off nil t)
-(global-linum-mode 1)
-#+END_SRC
-
-** Tabbar-Ruler
-#+BEGIN_SRC emacs-lisp
-  (require 'tabbar-ruler)
-#+END_SRC
-
-** Yaoddmuse-mode
-Add yaoddmuse emacs auto-load
-#+BEGIN_SRC emacs-lisp
-  (autoload 'emacswiki-post "yaoddmuse" "" t)
-  
-#+END_SRC
-
-** Automatic Lisp Headings
-This requires =lib-requires= and =header2=
-#+BEGIN_SRC emacs-lisp
-  (require 'header2 nil t)
-  (when (featurep 'header2)
-    (add-hook 'write-file-hooks 'auto-update-file-header)
-    (add-hook 'emacs-lisp-mode-hook 'auto-make-header))
-  
-#+END_SRC
 
 ** Other, spell checking, tabs, imenu and a coding hook
 #+begin_src emacs-lisp 
