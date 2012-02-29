@@ -5,7 +5,7 @@ Ace jump mode is an easy navigation tool described [[https://github.com/winterTT
 wiki page.]] 
 * Configuration
 By default this package doesn't make any configuration changes, but
-suggests them.  These are the following configuration options.
+suggests them.  These are the following configuration options:
 
 #+BEGIN_SRC emacs-lisp
   (require 'ace-jump-mode)
