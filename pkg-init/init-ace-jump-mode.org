@@ -1,0 +1,13 @@
+#+TITLE: Ace-jump mode
+#+AUTHOR: Matthew L. Fidler
+* Introduction 
+Ace jump mode is an easy navigation tool described [[https://github.com/winterTTr/ace-jump-mode/wiki][on the ace-jump
+wiki page.]] 
+* Configuration
+By default this package doesn't make any configuration changes, but
+suggests them.  These are the following configuration options.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'ace-jump-mode)
+  (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+#+END_SRC
