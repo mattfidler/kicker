@@ -206,7 +206,7 @@ http://blogisticreflections.wordpress.com/2009/10/01/r-object-tooltips-in-ess/
   
   ;; default key map
   (defun kicker-add-tooltip-key ()
-    (local-set-key "\C-c t" 'ess-R-object-tooltip))
+    (local-set-key "\C-ct" 'ess-R-object-tooltip))
   (add-hook 'ess-mode-hook 'kicker-add-tooltip-key)
   (provide 'ess-R-object-tooltip)
   

@@ -1,4 +1,4 @@
-#+TITLE: Portable Kicker
+as#+TITLE: Portable Kicker
 #+AUTHOR: Matthew L. Fidler
 * Introduction 
  This is a combination of the [[https://github.com/eschulte/emacs24-kicker][Eric Schulte's emacs24 starter kit]] and
@@ -348,12 +348,12 @@ everyone using the kicker.
 Also the kicker sets up the variable kicker-sources below:
 
 #+BEGIN_SRC emacs-lisp
-  (setq kicker-sources '(yas-jit auto-complete auto-indent-mode
-                                 autopair smex tabbar-ruler idomenu
-                                 nxhtml auto-complete-emacs-lisp
-                                 auto-complete-etags
-                                 auto-complete-yasnippet
-                                 )
+  (setq kicker-sources '(yasnippet auto-complete auto-indent-mode
+                                   autopair smex tabbar-ruler idomenu
+                                   nxhtml auto-complete-emacs-lisp
+                                   auto-complete-etags
+                                   auto-complete-yasnippet
+                                   )
         ;;"Sources for the kicker package"
         )
   
