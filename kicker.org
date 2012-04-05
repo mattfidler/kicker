@@ -204,19 +204,20 @@ interested in the actual code implementing the kicker.
 ** Bootstrapping el-get.
 
 #+BEGIN_SRC emacs-lisp
-  (setq el-get-user-package-directory
-        (expand-file-name "pkg-init"
-                          kicker-dir))
-  (unless (require 'el-get nil t)
-    (when (executable-find "git")
-      (url-retrieve
-       "https://raw.github.com/mlf176f2/el-get/master/el-get-install.el"
-       (lambda (s)
-         (let (el-get-master-branch)
-           (end-of-buffer)
-           (eval-print-last-sexp))))))
-  (add-to-list 'el-get-recipe-path
-               (concat usb-app-dir "lisp/rcp"))
+  (let ((package-user-dir))
+    (setq el-get-user-package-directory
+          (expand-file-name "pkg-init"
+                            kicker-dir))
+    (unless (require 'el-get nil t)
+      (when (executable-find "git")
+        (url-retrieve
+         "https://raw.github.com/mlf176f2/el-get/master/el-get-install.el"
+         (lambda (s)
+           (let (el-get-master-branch)
+             (end-of-buffer)
+             (eval-print-last-sexp))))))
+    (add-to-list 'el-get-recipe-path
+                 (concat kicker-dir "rcp")))
   
 #+END_SRC
 

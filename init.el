@@ -79,7 +79,10 @@
 
 ;; Make sure elpa is present
 (when (< emacs-major-version 24)
-  (load (expand-file-name "lisp/src/package.el" usb-app-dir)))
+  (if (not (file-exists-p (expand-file-name "../Data/lisp/src/package.el" usb-app-dir)))
+      (url-copy-file "http://repo.or.cz/w/emacs.git/blob_plain/1a0a666f941c99882093d7bd08ced15033bc3f0c:/lisp/emacs-lisp/package.el" 
+		     (expand-file-name "../Data/lisp/src/package.el" usb-app-dir) t))
+  (load (expand-file-name "../Data/lisp/src/package.el" usb-app-dir)))
 
 ;; load up the starter kit
 (kicker-load-org (expand-file-name "kicker.org" kicker-dir))
