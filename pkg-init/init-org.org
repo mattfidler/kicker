@@ -32,7 +32,7 @@ display a list of the code blocks commands and their related keys.
   (setq org-use-speed-commands t)
 #+end_src
 
-** Code blocks
+** TODO Code blocks
    :PROPERTIES:
    :CUSTOM_ID: babel
    :END:
@@ -42,7 +42,6 @@ to activate more languages using the customize interface for the
 one below.  The customize interface of `=org-babel-load-languages='
 contains an up to date list of the currently supported languages.
 #+begin_src emacs-lisp
-  
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((R . t)
@@ -60,7 +59,6 @@ contains an up to date list of the currently supported languages.
      (sh . t)
      (sql . nil)
      (sqlite . nil)))
-  
 #+end_src
 
 You are encouraged to add the following to your personal configuration

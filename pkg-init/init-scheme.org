@@ -8,8 +8,8 @@
    :END:
 
 #+begin_src emacs-lisp
-(add-hook 'scheme-mode-hook 'run-kicker-coding-hook)
-;; (add-hook 'scheme-mode-hook 'idle-highlight)
-(font-lock-add-keywords 'scheme-mode
-			'(("(\\|)" . 'kicker-paren-face)))
+  (add-hook 'scheme-mode-hook 'run-kicker-coding-hook)
+  ;; (add-hook 'scheme-mode-hook 'idle-highlight)
+  (font-lock-add-keywords 'scheme-mode
+                          '(("(\\|)" . 'kicker-paren-face)))
 #+end_src

@@ -5,6 +5,9 @@ I like to use CUA mode in org.  Therefore, I use the work-around
 org-cua-dwim.
 
 #+BEGIN_SRC emacs-lisp
-  (require 'org-cua-dwim)
-  (org-cua-dwim-activate)
+  (eval-after-load "org"
+    (require 'org-cua-dwim)
+    (org-cua-dwim-activate))
+  
 #+END_SRC
+: 

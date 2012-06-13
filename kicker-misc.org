@@ -134,12 +134,15 @@ explanation of these customizations.
           ido-everywhere t
           org-completion-use-ido t
           ido-max-prospects 10
+          ido-default-file-method 'selected-window
           ido-ignore-extensions t
           ido-file-extensions-order '(".org" ".R" ".ctl" ".pltc" ".nsi" ".txt" ".py" ".emacs" ".xml" ".el" ".ini" ".cfg" ".cnf" ".nsi" ".nsh")
           ido-save-directory-list-file (concat usb-site-lisp-dir
                                                "../Data/saves/ido-last-" system-name)))
   
 #+end_src
+
+
 
 
 ** Other, spell checking, tabs, imenu and a coding hook

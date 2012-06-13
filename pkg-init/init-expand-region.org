@@ -5,7 +5,7 @@ Expand region is a useful way to select regions.  It is described on
 the [[https://github.com/magnars/expand-region.el][magnars/expand-region.el - GitHub]] page.
 
 #+BEGIN_SRC emacs-lisp
-(require 'expand-region)
-(global-set-key (kbd "C-@") 'er/expand-region)
+  (autoload 'er/expand-region "expand-region" "expand region" t)
+  (global-set-key (kbd "C-@") 'er/expand-region)
 #+END_SRC
 
