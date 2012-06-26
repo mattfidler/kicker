@@ -315,7 +315,7 @@ Using auto-indent-mode, paste =c:\= to =c:/=
   
 #+END_SRC
 
-Also take off unneccary ">" and "+" for example copying:
+Also take off unnecessary ">" and "+" for example copying:
 
 : > ## set up
 : > availDists <- c(Normal="rnorm", Exponential="rexp")
@@ -347,7 +347,7 @@ Should give:
   (defun kicker-ess-turn-on-fix-code ()
     (interactive)
     (when (string= "S" ess-language)
-      (add-hook 'auto-indent-after-yank-hook 'kicker-ess-fix-cote t t)))
+      (add-hook 'auto-indent-after-yank-hook 'kicker-ess-fix-code t t)))
   (add-hook 'ess-mode-hook 'kicker-ess-turn-on-fix-code)
   
 #+END_SRC
