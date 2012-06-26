@@ -299,7 +299,6 @@ Using auto-indent-mode, paste =c:\= to =c:/=
 #+BEGIN_SRC emacs-lisp
   (defun kicker-ess-fix-path (beg end)
     "Fixes ess path"
-    (message "%s,%s" beg end)
     (save-restriction
       (save-excursion
         (narrow-to-region beg end)
@@ -315,4 +314,42 @@ Using auto-indent-mode, paste =c:\= to =c:/=
   (add-hook 'ess-mode-hook 'kicker-ess-turn-on-fix-path)
   
 #+END_SRC
+
+Also take off unneccary ">" and "+" for example copying:
+
+: > ## set up
+: > availDists <- c(Normal="rnorm", Exponential="rexp")
+: > availKernels <- c("gaussian", "epanechnikov", "rectangular",
+: + "triangular", "biweight", "cosine", "optcosine")
+
+
+Should give:
+: ## set up
+: availDists <- c(Normal="rnorm", Exponential="rexp")
+: availKernels <- c("gaussian", "epanechnikov", "rectangular",
+: "triangular", "biweight", "cosine", "optcosine")
+
+#+BEGIN_SRC emacs-lisp
+  (defun kicker-ess-fix-code (beg end)
+    "Fixes ess path"
+    (save-restriction
+      (save-excursion
+        (save-match-data
+          (narrow-to-region beg end)
+          (goto-char (point-min))
+          (while (re-search-forward "^[ \t]*[>][ \t]+" nil t)
+            (replace-match "")
+            (end-of-line)
+            (while (looking-at "\n[ \t]*[+][ \t]+" nil t)
+              (replace-match "\n")
+              (end-of-line)))))))
+  
+  (defun kicker-ess-turn-on-fix-code ()
+    (interactive)
+    (when (string= "S" ess-language)
+      (add-hook 'auto-indent-after-yank-hook 'kicker-ess-fix-cote t t)))
+  (add-hook 'ess-mode-hook 'kicker-ess-turn-on-fix-code)
+  
+#+END_SRC
+
 
