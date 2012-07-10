@@ -56,6 +56,29 @@ This does the following:
   
 #+end_src
 
+*** Paste Diffs
+
+When pasting diffs that start entirely with +, take out the initial +
+Also take off unnecessary ">" and "+" for example copying:
+
+#+BEGIN_SRC emacs-lisp
+  (defun kicker-emacs-lisp-fix-diff (beg end)
+    "Fixes ess path"
+    (save-restriction
+      (save-excursion
+        (save-match-data
+          (narrow-to-region beg end)
+          (goto-char (point-min))
+          (while (re-search-forward "^[ \t]*[+][ \t]+" nil t)
+            (replace-match ""))))))
+  
+  (defun kicker-emacs-lisp-turn-on-fix-diff ()
+    (interactive)
+    (when (string= "S" ess-language)
+      (add-hook 'auto-indent-after-yank-hook 'kicker-emacs-lisp-fix-diff t t)))
+  (add-hook 'emacs-lisp-mode-hook 'kicker-emacs-lisp-turn-on-fix-diff)
+  
+#+END_SRC
 ** Scheme
    :PROPERTIES:
    :CUSTOM_ID: scheme

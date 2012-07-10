@@ -294,7 +294,7 @@ can be accomplished by org-table-comment
 #+BEGIN_SRC emacs-lisp
   (add-hook 'ess-mode-hook 'run-kicker-coding-hook)
 #+END_SRC
-* Paste paths correctly
+* Paste paths correctly and strip code ">" and "+"
 Using auto-indent-mode, paste =c:\= to =c:/=
 #+BEGIN_SRC emacs-lisp
   (defun kicker-ess-fix-path (beg end)
@@ -316,7 +316,6 @@ Using auto-indent-mode, paste =c:\= to =c:/=
 #+END_SRC
 
 Also take off unnecessary ">" and "+" for example copying:
-
 : > ## set up
 : > availDists <- c(Normal="rnorm", Exponential="rexp")
 : > availKernels <- c("gaussian", "epanechnikov", "rectangular",
@@ -339,10 +338,10 @@ Should give:
           (goto-char (point-min))
           (while (re-search-forward "^[ \t]*[>][ \t]+" nil t)
             (replace-match "")
-            (end-of-line)
-            (while (looking-at "\n[ \t]*[+][ \t]+" nil t)
+            (goto-char (point-at-eol))
+            (while (looking-at "[ \t\n]*[+][ \t]+")
               (replace-match "\n")
-              (end-of-line)))))))
+              (goto-char (point-at-eol))))))))
   
   (defun kicker-ess-turn-on-fix-code ()
     (interactive)
