@@ -74,7 +74,7 @@ Also take off unnecessary ">" and "+" for example copying:
   
   (defun kicker-emacs-lisp-turn-on-fix-diff ()
     (interactive)
-    (when (string= "S" ess-language)
+    (when (and (boundp 'ess-language) (string= "S" ess-language))
       (add-hook 'auto-indent-after-yank-hook 'kicker-emacs-lisp-fix-diff t t)))
   (add-hook 'emacs-lisp-mode-hook 'kicker-emacs-lisp-turn-on-fix-diff)
   

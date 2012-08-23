@@ -23,7 +23,7 @@ The [[http://emacswiki.org][Emacs Wiki]] is also very handy.
    #+begin_src sh
      git clone http://github.com/mlf176f2/kicker.git
    #+end_src
-3. Move the resulting directory to =~/.emacs.d= [1]
+3. Move the resulting directory to =~/.emacs.d=
 4. Launch Emacs!
 
 After setup you may need to restart Emacs one or twice while it
@@ -82,7 +82,7 @@ general kicker updates without conflict.
 
 - User specific config :: Your personal configuration information can
      be stored in a user-specific-config file.  This is the file named
-     after your user with the extensions =.el= or =.org= [2].  If
+     after your user with the extensions =.el= or =.org=.  If
      you're unsure of your user name evaluate the following code block
      to find out.
      #+begin_src sh
@@ -197,28 +197,35 @@ You can also write a =el-get= recipie and submit it to =el-get=.  See
 :PROPERTIES:
 :CUSTOM_ID: implementation
 :END:
-
 This section contains all code implementing the Emacs Kicker.  It
 is probably safe to stop reading at this point unless you are
 interested in the actual code implementing the kicker.
 ** Bootstrapping el-get.
 
 #+BEGIN_SRC emacs-lisp
-  (let ((package-user-dir))
-    (setq el-get-user-package-directory
-          (expand-file-name "pkg-init"
-                            kicker-dir))
-    (unless (require 'el-get nil t)
-      (when (executable-find "git")
-        (url-retrieve
-         "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
-         (lambda (s)
-           (let (el-get-master-branch)
-             (end-of-buffer)
-             (eval-print-last-sexp))))))
-    (add-to-list 'el-get-recipe-path
-                 (concat kicker-dir "rcp")))
+    (setq package-user-dir (expand-file-name "elpa" kicker-dir))
+    (let ((package-user-dir))
   
+  (let ((default-directory (expand-file-name "el-get"
+                                                kicker-dir)))
+        (normal-top-level-add-subdirs-to-load-path))
+    
+      (setq el-get-dir (expand-file-name "el-get" kicker-dir))
+      (add-to-list 'load-path el-get-dir)
+      (setq el-get-user-package-directory
+            (expand-file-name "pkg-init"
+                              kicker-dir))
+      (unless (require 'el-get nil t)
+        (when (executable-find "git")
+          (url-retrieve
+           "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
+           (lambda (s)
+             (let (el-get-master-branch)
+               (end-of-buffer)
+               (eval-print-last-sexp))))))
+      (add-to-list 'el-get-recipe-path
+                   (concat kicker-dir "rcp")))
+    
 #+END_SRC
 
 ** kicker basics
@@ -509,7 +516,8 @@ After we've loaded all the Kicker defaults, lets load the User's stuff.
 *** Settings from M-x customize
 #+srcname: m-x-customize-customizations
 #+begin_src emacs-lisp
-  (load custom-file 'noerror)
+  (when custom-file
+    (load custom-file 'noerror))
 #+end_src
 
 ** At the very end 
@@ -533,11 +541,3 @@ CLOCK: [2011-12-16 Fri 09:26]--[2011-12-16 Fri 09:50] =>  0:24
 ** TODO Add encrypted loading of files
 https://github.com/eschulte/emacs24-kicker/pull/19/files
 ** TODO Add per-package loading of pre-installed libraries (like emacs-lisp)
-* Footnotes
-
-[1] If you already have a directory at =~/.emacs.d= move it out of the
-way and put this there instead.
-
-[2] The emacs kicker uses [[http://orgmode.org/][Org Mode]] to load embedded elisp code
-directly from literate Org-mode documents.
-
